@@ -1,0 +1,23 @@
+
+C:\Users\Hasan\Desktop\compiler_project\test.o:     file format pe-x86-64
+
+
+Disassembly of section .text:
+
+0000000000000000 <main>:
+   0:	55                   	push   rbp
+   1:	48 89 e5             	mov    rbp,rsp
+   4:	48 83 ec 20          	sub    rsp,0x20
+   8:	e8 00 00 00 00       	call   d <main+0xd>
+   d:	b8 00 00 00 00       	mov    eax,0x0
+  12:	48 83 c4 20          	add    rsp,0x20
+  16:	5d                   	pop    rbp
+  17:	c3                   	ret
+  18:	90                   	nop
+  19:	90                   	nop
+  1a:	90                   	nop
+  1b:	90                   	nop
+  1c:	90                   	nop
+  1d:	90                   	nop
+  1e:	90                   	nop
+  1f:	90                   	nop

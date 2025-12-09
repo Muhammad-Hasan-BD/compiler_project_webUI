@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compiler Design Lab</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="assets/css/atom-one-dark.min.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Compiler Design Lab</h1>
+            <p>C programs and their compilation stages.</p>
+            
+        </header>
+        <main>
+            <div class="selectors">
+                <div class="program-selector">
+                    <h2>Select a Program</h2>
+                    <div class="buttons">
+                        <button class="program-btn active" data-program="code1">Regex: ab*</button>
+                        <button class="program-btn" data-program="code2">C Identifier Check</button>
+                        <button class="program-btn" data-program="code3">Newline Counter</button>
+                        <button id="upload-btn" class="program-btn" data-program="__new">+ Upload New Program</button>
+                    </div>
+                </div>
+                <div class="file-selector">
+                    <h2>Select a File to View</h2>
+                    <div class="tabs">
+                        <button class="file-tab active" data-file-type="c">Source (.c)</button>
+                        <button class="file-tab" data-file-type="i">Preprocessed (.i)</button>
+                        <button class="file-tab" data-file-type="s">Assembly (.s)</button>
+                        <button class="file-tab" data-file-type="dump">Object Dump (.dump)</button>
+                        <button class="file-tab" data-file-type="o">Object File (.o)</button>
+                    </div>
+                </div>
+            </div>
+            <div id="upload-panel" class="upload-panel" style="display:none;">
+                <h2>Upload New C Program</h2>
+                <div class="upload-card">
+                    <input id="new-filename" class="filename" type="text" placeholder="Filename (optional)" />
+                    <textarea id="new-code" class="code-input" rows="12" placeholder="// Paste your C code here...\n#include <stdio.h>\nint main() { return 0; }"></textarea>
+                    <div class="upload-actions">
+                        <button id="compile-btn" class="btn primary">Compile & Generate Files</button>
+                        <span id="compile-status" class="compile-status" aria-live="polite"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="code-display">
+                <pre><code id="code-content" class="language-c"></code></pre>
+            </div>
+        </main>
+        <footer>
+            <p>Md. Hasan Mahmud Meraz , CSE </p>
+            <p>Daffodil International University | DIU</p>
+            
+        </footer> 
+    </div>
+        <script src="assets/js/highlight.min.js"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const programButtons = document.querySelectorAll('.program-btn');
+        const fileTabs = document.querySelectorAll('.file-tab');
+        const codeContent = document.getElementById('code-content');
+
+        let activeProgram = 'code1'; // Default selected program
+        let activeFileType = 'c'; // Default selected file type
+
+        const fileLanguageMap = {
+            c: 'c',
+            i: 'c',
+            s: 'assembly',
+            dump: 'plaintext',
+            o: 'plaintext'
+        };
+
+        const loadContent = async (preferFileType) => {
+            const program = activeProgram;
+            // If upload panel is active, don't try to load files
+            if (program === '__new') return;
+
+            const allFileTypes = ['c', 'i', 's', 'dump', 'o'];
+            let fileType = preferFileType || activeFileType;
+
+            const tryFetch = async (prog, ftype) => {
+                const filePath = `${prog}.${ftype}`;
+                try {
+                    const resp = await fetch(filePath);
+                    if (!resp.ok) return { ok: false, status: resp.status, filePath, ftype };
+                    const content = await resp.text();
+                    return { ok: true, content, filePath, ftype };
+                } catch (err) {
+                    return { ok: false, error: err, filePath, ftype };
+                }
+            };
+
+            // Try preferred file type first, then fall back to other artifacts
+            let result = await tryFetch(program, fileType);
+            if (!result.ok) {
+                for (const ft of allFileTypes) {
+                    if (ft === fileType) continue;
+                    result = await tryFetch(program, ft);
+                    if (result.ok) {
+                        // update activeFileType and UI tab selection
+                        activeFileType = ft;
+                        document.querySelectorAll('.file-tab').forEach(t => t.classList.remove('active'));
+                        const tab = document.querySelector(`.file-tab[data-file-type="${ft}"]`);
+                        if (tab) tab.classList.add('active');
+                        break;
+                    }
+                }
+            }
+
+            if (!result.ok) {
+                console.error('Error loading file:', result);
+                codeContent.innerHTML = '';
+                codeContent.className = `language-plaintext`;
+                codeContent.textContent = `Error loading ${program}.${fileType}. Please ensure the file exists and is accessible.`;
+                hljs.highlightElement(codeContent);
+                return;
+            }
+
+            const lang = fileLanguageMap[result.ftype];
+            codeContent.innerHTML = '';
+            codeContent.className = `language-${lang}`;
+            codeContent.textContent = result.content;
+            hljs.highlightElement(codeContent);
+        };
+
+        // Event delegation for program buttons (handles dynamically added buttons too)
+        const programContainer = document.querySelector('.program-selector .buttons');
+        if (programContainer) {
+            programContainer.addEventListener('click', (e) => {
+                const button = e.target.closest('.program-btn');
+                if (!button) return;
+                // update active button state
+                document.querySelectorAll('.program-btn').forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+                activeProgram = button.dataset.program;
+                // hide upload panel unless the special upload button was clicked
+                if (activeProgram === '__new') {
+                    document.getElementById('upload-panel').style.display = 'block';
+                } else {
+                    document.getElementById('upload-panel').style.display = 'none';
+                    loadContent();
+                }
+            });
+        } else {
+            // Fallback: bind directly to existing buttons
+            programButtons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.program-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    activeProgram = btn.dataset.program;
+                    if (activeProgram === '__new') {
+                        document.getElementById('upload-panel').style.display = 'block';
+                    } else {
+                        document.getElementById('upload-panel').style.display = 'none';
+                        loadContent();
+                    }
+                });
+            });
+        }
+
+        // Event listeners for file tabs
+        fileTabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                fileTabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                activeFileType = tab.dataset.fileType; // Use data-file-type (with hyphen)
+                loadContent();
+            });
+        });
+
+        // Initial load
+        loadContent();
+
+        // Upload / Compile UI
+        const uploadPanel = document.getElementById('upload-panel');
+        const compileBtn = document.getElementById('compile-btn');
+        const compileStatus = document.getElementById('compile-status');
+        const newFilenameInput = document.getElementById('new-filename');
+        const newCodeInput = document.getElementById('new-code');
+
+        const sanitizeFilename = (s) => s.replace(/[^a-zA-Z0-9_\-]/g, '_');
+
+        compileBtn.addEventListener('click', async () => {
+            const rawName = (newFilenameInput.value || '').trim();
+            const code = newCodeInput.value || '';
+            if (!code) {
+                compileStatus.textContent = 'Please provide C source code.';
+                return;
+            }
+            const basename = sanitizeFilename(rawName) || `userprog_${Date.now()}`;
+
+            compileBtn.disabled = true;
+            compileStatus.textContent = 'Running: gcc -E ' + basename + '.c';
+
+            try {
+                const resp = await fetch('/compile', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ filename: basename, code })
+                });
+
+                // Be tolerant of non-JSON or empty responses (e.g. when backend isn't running)
+                const raw = await resp.text();
+                let data = null;
+                try {
+                    data = raw ? JSON.parse(raw) : null;
+                } catch (parseErr) {
+                    // not JSON — keep raw text for diagnostics
+                    data = null;
+                }
+
+                if (!resp.ok) {
+                    const serverMsg = (data && data.error) || raw || `HTTP ${resp.status}`;
+                    throw new Error(serverMsg || 'Compile failed');
+                }
+
+                compileStatus.textContent = 'Compile finished.';
+
+                // Add new program button dynamically
+                const btn = document.createElement('button');
+                btn.className = 'program-btn';
+                btn.dataset.program = data.basename;
+                btn.textContent = data.label || data.basename;
+
+                // Insert before upload button
+                const container = document.querySelector('.program-selector .buttons');
+                container.insertBefore(btn, document.getElementById('upload-btn'));
+
+                // activate new button (synthesize a bubbled click so delegation runs)
+                btn.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }));
+            } catch (err) {
+                console.error(err);
+                compileStatus.textContent = 'Error: ' + (err.message || err);
+            } finally {
+                compileBtn.disabled = false;
+            }
+        });
+    });
+    </script>
+</body>
+</html>

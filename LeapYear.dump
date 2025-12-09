@@ -1,0 +1,80 @@
+
+C:\Users\Hasan\Desktop\compiler_project\LeapYear.o:     file format pe-x86-64
+
+
+Disassembly of section .text:
+
+0000000000000000 <main>:
+   0:	55                   	push   rbp
+   1:	48 89 e5             	mov    rbp,rsp
+   4:	48 83 ec 30          	sub    rsp,0x30
+   8:	e8 00 00 00 00       	call   d <main+0xd>
+   d:	48 8d 05 00 00 00 00 	lea    rax,[rip+0x0]        # 14 <main+0x14>
+  14:	48 89 c1             	mov    rcx,rax
+  17:	e8 00 00 00 00       	call   1c <main+0x1c>
+  1c:	48 8d 45 fc          	lea    rax,[rbp-0x4]
+  20:	48 89 c2             	mov    rdx,rax
+  23:	48 8d 05 0f 00 00 00 	lea    rax,[rip+0xf]        # 39 <main+0x39>
+  2a:	48 89 c1             	mov    rcx,rax
+  2d:	e8 00 00 00 00       	call   32 <main+0x32>
+  32:	8b 55 fc             	mov    edx,DWORD PTR [rbp-0x4]
+  35:	48 63 c2             	movsxd rax,edx
+  38:	48 69 c0 1f 85 eb 51 	imul   rax,rax,0x51eb851f
+  3f:	48 c1 e8 20          	shr    rax,0x20
+  43:	c1 f8 07             	sar    eax,0x7
+  46:	89 d1                	mov    ecx,edx
+  48:	c1 f9 1f             	sar    ecx,0x1f
+  4b:	29 c8                	sub    eax,ecx
+  4d:	69 c8 90 01 00 00    	imul   ecx,eax,0x190
+  53:	89 d0                	mov    eax,edx
+  55:	29 c8                	sub    eax,ecx
+  57:	85 c0                	test   eax,eax
+  59:	75 16                	jne    71 <main+0x71>
+  5b:	8b 45 fc             	mov    eax,DWORD PTR [rbp-0x4]
+  5e:	89 c2                	mov    edx,eax
+  60:	48 8d 05 12 00 00 00 	lea    rax,[rip+0x12]        # 79 <main+0x79>
+  67:	48 89 c1             	mov    rcx,rax
+  6a:	e8 00 00 00 00       	call   6f <main+0x6f>
+  6f:	eb 70                	jmp    e1 <main+0xe1>
+  71:	8b 55 fc             	mov    edx,DWORD PTR [rbp-0x4]
+  74:	48 63 c2             	movsxd rax,edx
+  77:	48 69 c0 1f 85 eb 51 	imul   rax,rax,0x51eb851f
+  7e:	48 c1 e8 20          	shr    rax,0x20
+  82:	c1 f8 05             	sar    eax,0x5
+  85:	89 d1                	mov    ecx,edx
+  87:	c1 f9 1f             	sar    ecx,0x1f
+  8a:	29 c8                	sub    eax,ecx
+  8c:	6b c8 64             	imul   ecx,eax,0x64
+  8f:	89 d0                	mov    eax,edx
+  91:	29 c8                	sub    eax,ecx
+  93:	85 c0                	test   eax,eax
+  95:	75 16                	jne    ad <main+0xad>
+  97:	8b 45 fc             	mov    eax,DWORD PTR [rbp-0x4]
+  9a:	89 c2                	mov    edx,eax
+  9c:	48 8d 05 25 00 00 00 	lea    rax,[rip+0x25]        # c8 <main+0xc8>
+  a3:	48 89 c1             	mov    rcx,rax
+  a6:	e8 00 00 00 00       	call   ab <main+0xab>
+  ab:	eb 34                	jmp    e1 <main+0xe1>
+  ad:	8b 45 fc             	mov    eax,DWORD PTR [rbp-0x4]
+  b0:	83 e0 03             	and    eax,0x3
+  b3:	85 c0                	test   eax,eax
+  b5:	75 16                	jne    cd <main+0xcd>
+  b7:	8b 45 fc             	mov    eax,DWORD PTR [rbp-0x4]
+  ba:	89 c2                	mov    edx,eax
+  bc:	48 8d 05 12 00 00 00 	lea    rax,[rip+0x12]        # d5 <main+0xd5>
+  c3:	48 89 c1             	mov    rcx,rax
+  c6:	e8 00 00 00 00       	call   cb <main+0xcb>
+  cb:	eb 14                	jmp    e1 <main+0xe1>
+  cd:	8b 45 fc             	mov    eax,DWORD PTR [rbp-0x4]
+  d0:	89 c2                	mov    edx,eax
+  d2:	48 8d 05 25 00 00 00 	lea    rax,[rip+0x25]        # fe <main+0xfe>
+  d9:	48 89 c1             	mov    rcx,rax
+  dc:	e8 00 00 00 00       	call   e1 <main+0xe1>
+  e1:	b8 00 00 00 00       	mov    eax,0x0
+  e6:	48 83 c4 30          	add    rsp,0x30
+  ea:	5d                   	pop    rbp
+  eb:	c3                   	ret
+  ec:	90                   	nop
+  ed:	90                   	nop
+  ee:	90                   	nop
+  ef:	90                   	nop
