@@ -6,25 +6,9 @@ This project showcases three C programs related to compiler design and displays 
 
 1.  **Navigate to the `ui` directory:**
     ```bash
-    cd compiler_project/ui
-    ```
+    cd compiler_project
 
-2.  **Start a simple web server.**
-    If you have Python 3 installed, you can use its built-in HTTP server:
-    ```bash
-    python3 -m http.server
-    ```
-    If you have Python 2, use:
-    ```bash
-    python -m SimpleHTTPServer
-    ```
-
-3.  **Open your web browser** and go to the following address:
-    [http://localhost:8000](http://localhost:8000)
-
-You should now see the web interface. You can select the C program and the file type to view its content.
-
-## Uploading and Generating New Programs (new)
+##How to run : Uploading and Generating New Programs (new)
 
 This project now includes a small Node.js server that accepts a C source from the web UI and generates the compilation-stage files (`.i`, `.s`, `.o`, `.dump`).
 
